@@ -1,0 +1,41 @@
+package com.project.szs.Auth.Entity;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "USER")
+@Getter
+@Setter
+@Builder
+@Entity
+public class User {
+
+    @JsonIgnore
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "userId", nullable = false)
+    private String userId;     // 로그인 ID
+
+    @Column(name = "password", nullable = false)
+    private String password;    // 로그인 비밀번호
+
+    @Column(name = "name", nullable = false)
+    private String name;    // 유저실명
+
+    @Column(name = "regNo", nullable = false)
+    private String regNo;       // 주민등록번호
+
+    @Column(name = "status", nullable = false)
+    @ColumnDefault("false")
+    private Boolean userStatus;
+
+}
