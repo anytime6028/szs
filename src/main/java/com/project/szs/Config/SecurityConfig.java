@@ -34,8 +34,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                // token을 사용하는 방식이기 때문에 csrf를 disable합니다.
-                .csrf(AbstractHttpConfigurer::disable)
+                 .csrf(AbstractHttpConfigurer::disable)
 
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
@@ -54,8 +53,11 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
-                .requestMatchers("/api/authenticate").permitAll() // 로그인 api
-                .requestMatchers("/api/signup").permitAll() // 회원가입 api
+//                .requestMatchers("/**").permitAll()
+//                .requestMatchers("/szs/signup").permitAll()
+                .requestMatchers("/szs/**").authenticated()
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
+
                 .requestMatchers(PathRequest.toH2Console()).permitAll()// h2-console, favicon.ico 요청 인증 무시
                 .requestMatchers("/favicon.ico").permitAll()
                 .anyRequest().authenticated() // 그 외 인증 없이 접근X

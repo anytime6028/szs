@@ -9,14 +9,14 @@ import org.hibernate.annotations.ColumnDefault;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "USER")
+@Table(name = "member")
 @Getter
 @Setter
 @Builder
 @Entity
 public class User {
 
-    @JsonIgnore
+//    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

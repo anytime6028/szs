@@ -34,6 +34,13 @@ dependencies {
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
 	implementation("com.h2database:h2")
+	// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+
+// https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
+	implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
+
+
 
 
 }
