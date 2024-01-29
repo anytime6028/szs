@@ -54,7 +54,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
 //                .requestMatchers("/**").permitAll()
-                .requestMatchers("/szs/signup").permitAll()
+                .requestMatchers("/szs/signup","/szs/login").permitAll()
                 .requestMatchers("/szs/**").authenticated()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
 

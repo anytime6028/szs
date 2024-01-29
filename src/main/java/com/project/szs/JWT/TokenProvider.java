@@ -1,28 +1,28 @@
 package com.project.szs.JWT;
 
+import com.project.szs.Auth.DTO.MemberDto;
+import com.project.szs.Auth.Entity.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -33,32 +33,35 @@ public class TokenProvider
 
     private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
     private static final String AUTHORITIES_KEY = "auth";
-    private final String secret = "";
+
+    @Value("${jwt.secret}")
+    private String secret;
+
     private final long tokenValidityInMilliseconds = 30*60*1000;
     private Key key;
 
 
     // 빈이 생성되고 주입을 받은 후에 secret값을 Base64 Decode해서 key 변수에 할당하기 위해
-//    @Override
+    @PostConstruct
     public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+    public String createToken(Member member) {
 
-        // 토큰의 expire 시간을 설정
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
-        return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities) // 정보 저장
-                .signWith(key, SignatureAlgorithm.HS512) // 사용할 암호화 알고리즘과 , signature 에 들어갈 secret값 세팅
-                .setExpiration(validity) // set Expire Time 해당 옵션 안넣으면 expire안함
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", member.getUserId());
+        map.put("name", member.getName());
+
+        return Jwts.builder().setHeaderParam("typ","JWT")
+                .setSubject(member.getUserId())
+                .claim(AUTHORITIES_KEY, map)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .setExpiration(validity)
                 .compact();
     }
 
@@ -71,6 +74,9 @@ public class TokenProvider
                 .parseClaimsJws(token)
                 .getBody();
 
+        System.out.println("/////////////////");
+        System.out.println(claims);
+
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
@@ -79,6 +85,13 @@ public class TokenProvider
         User principal = new User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+    }
+
+    public void SetAuthentication(String token)
+    {
+        Authentication authentication = getAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        System.out.println("Security Context에 "+ authentication.getName()+" 인증 정보를 저장했습니다");
     }
 
     // 토큰의 유효성 검증을 수행

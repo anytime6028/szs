@@ -1,7 +1,6 @@
 package com.project.szs.Auth.Entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -14,7 +13,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Setter
 @Builder
 @Entity
-public class User {
+public class Member {
 
 //    @JsonIgnore
     @Id
@@ -34,8 +33,11 @@ public class User {
     @Column(name = "regNo", nullable = false)
     private String regNo;       // 주민등록번호
 
-    @Column(name = "status", nullable = false)
-    @ColumnDefault("false")
-    private Boolean userStatus;
+//    @Column(name = "status", nullable = false)
+//    @ColumnDefault("false")
+//    private Boolean userStatus;
+
+
+
 
 }

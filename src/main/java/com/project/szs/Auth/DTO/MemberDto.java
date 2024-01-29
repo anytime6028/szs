@@ -1,16 +1,14 @@
 package com.project.szs.Auth.DTO;
 
 
-import jakarta.persistence.Column;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class MemberDto {
 
 
     @NonNull
