@@ -45,6 +45,8 @@ dependencies {
 // https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
 	implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
 
+	// https://mvnrepository.com/artifact/org.json/json
+	implementation("org.json:json:20231013")
 
 
 

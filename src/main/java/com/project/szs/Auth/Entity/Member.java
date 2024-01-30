@@ -18,8 +18,8 @@ public class Member {
 //    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "memberId")
+    private Long memberId;
 
     @Column(name = "userId", nullable = false)
     private String userId;     // 로그인 ID

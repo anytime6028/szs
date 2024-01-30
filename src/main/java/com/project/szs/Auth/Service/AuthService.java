@@ -9,10 +9,19 @@ import com.project.szs.JWT.TokenProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -89,6 +98,57 @@ public class AuthService {
     }
 
 
+    public String scrap()
+    {
+        String uri = "https://codetest.3o3.co.kr/v2/scrap";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "홍길동");
+        map.put("regNo", "860824-1655068");
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(map, headers);
+
+        ResponseEntity<Map> responseEntity = restTemplate.postForEntity(uri, requestEntity, Map.class);
+
+//        int statusCode = responseEntity.getStatusCodeValue();
+//        System.out.println("Response Code: " + statusCode);
+
+        Map responseBody = responseEntity.getBody();
+        System.out.println("Response Body: " + responseBody);
+
+        try {
+            JSONObject datajobj = (JSONObject) new JSONObject(responseBody).get("data");
+            JSONArray paymentArr = (JSONArray) datajobj.getJSONObject("jsonList").getJSONArray("급여");
+
+            int totalPayment = 0; // 총급여
+            int taxAmount = 0; //산출세액
+
+
+            for (Object obj : paymentArr)
+            {
+                JSONObject paymentObj = (JSONObject) obj;
+
+                if(paymentObj.get("소득내역").equals("급여"))
+                {
+                    totalPayment += converAmountToInt(paymentObj.get("총지급액").toString());
+                }
+            }
+            System.out.println("총지급액 : " + totalPayment);
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+//        System.out.println("payment test: " + payment.);
+        return "ok";
+    }
 
 
 
@@ -99,7 +159,11 @@ public class AuthService {
 
 
 
+    public int converAmountToInt(String amount)
+    {
+        return Integer.valueOf(amount.replace(",",""));
 
+    }
 
 
     public String encrypt(String str)

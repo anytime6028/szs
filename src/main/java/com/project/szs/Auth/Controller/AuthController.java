@@ -8,10 +8,7 @@ import com.project.szs.JWT.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/szs")
@@ -34,10 +31,10 @@ public class AuthController {
     }
 
 
-    @PostMapping("checktoken")
-    public ResponseEntity<?> check()
+    @PostMapping("scrap")
+    public ResponseEntity<?> scrap(@RequestHeader("Authorization")String token)
     {
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok(auth.scrap());
     }
 
 

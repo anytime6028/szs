@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.*;
@@ -114,6 +115,13 @@ public class TokenProvider
         }
         return false;
     }
+
+    public String resolveToken(String token)
+    {
+        return token.substring(7);
+    }
+
+
 
 
 }
