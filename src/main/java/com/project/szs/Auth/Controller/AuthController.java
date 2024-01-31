@@ -8,6 +8,9 @@ import com.project.szs.JWT.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,7 +22,7 @@ public class AuthController {
     private final AuthService auth;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody MemberDto memberDto)
+    public ResponseEntity<?> signup(@RequestBody MemberDto memberDto) throws Exception
     {
         return ResponseEntity.ok(auth.signup(memberDto));
     }
@@ -32,10 +35,23 @@ public class AuthController {
 
 
     @PostMapping("scrap")
-    public ResponseEntity<?> scrap(@RequestHeader("Authorization")String token)
+    public ResponseEntity<?> scrap() throws Exception
     {
         return ResponseEntity.ok(auth.scrap());
     }
+
+    @PostMapping("refund")
+    public ResponseEntity<?> refund() throws Exception
+    {
+        return ResponseEntity.ok(auth.refund());
+    }
+
+    @PostMapping("test")
+    public void test()
+    {
+        auth.test();
+    }
+
 
 
 

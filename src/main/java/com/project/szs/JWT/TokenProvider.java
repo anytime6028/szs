@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -55,11 +56,12 @@ public class TokenProvider
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
         Map<String, Object> map = new HashMap<>();
+        map.put("memberId", member.getMemberId());
         map.put("userId", member.getUserId());
         map.put("name", member.getName());
 
         return Jwts.builder().setHeaderParam("typ","JWT")
-                .setSubject(member.getUserId())
+                .setSubject(member.getMemberId().toString())
                 .claim(AUTHORITIES_KEY, map)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setExpiration(validity)
@@ -121,6 +123,17 @@ public class TokenProvider
         return token.substring(7);
     }
 
+    public Long getMemberIdFromToken()
+    {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+
+        // 현재 인증 정보 얻기
+        Authentication authentication = securityContext.getAuthentication();
+
+        Long memberId = Long.valueOf(authentication.getName().toString());
+
+        return memberId;
+    }
 
 
 
