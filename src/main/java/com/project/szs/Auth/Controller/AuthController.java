@@ -21,26 +21,26 @@ public class AuthController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final AuthService auth;
 
-    @PostMapping("/signup")
+    @PostMapping(value = "/signup", produces = "application/json")
     public ResponseEntity<?> signup(@RequestBody MemberDto memberDto) throws Exception
     {
         return ResponseEntity.ok(auth.signup(memberDto));
     }
 
-    @PostMapping("login")
+    @PostMapping(value = "login", produces = "application/json")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto)
     {
         return ResponseEntity.ok(auth.login(loginDto));
     }
 
 
-    @PostMapping("scrap")
+    @PostMapping(value = "scrap", produces = "application/json")
     public ResponseEntity<?> scrap() throws Exception
     {
         return ResponseEntity.ok(auth.scrap());
     }
 
-    @PostMapping("refund")
+    @PostMapping(value = "refund", produces = "application/json")
     public ResponseEntity<?> refund() throws Exception
     {
         return ResponseEntity.ok(auth.refund());

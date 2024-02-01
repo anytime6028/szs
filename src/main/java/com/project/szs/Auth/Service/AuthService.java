@@ -52,14 +52,16 @@ public class AuthService {
 
 
     @Transactional
-    public String signup(MemberDto memberDto) throws Exception
+    public Map<String, Object> signup(MemberDto memberDto) throws Exception
     {
+        Map<String, Object> response = new HashMap<>();
         if(sampleMember.containsKey(memberDto.getName()))
         {
             if(sampleMember.get(memberDto.getName()).equals(memberDto.getRegNo()))
             {
                 if (memberRepositoty.findUserByName(memberDto.getName()).isPresent() || memberRepositoty.findUserByUserId(memberDto.getUserId()).isPresent()) {
-                    return "fail";
+                    response.put("result", "fail");
+                    return response;
                 }
 
                 Member member = Member.builder()
@@ -70,17 +72,19 @@ public class AuthService {
                         .build();
 
                 memberRepositoty.save(member);
-
-                return "ok11";
+                response.put("result", "complete");
+                return response;
             }
             else
             {
-                return " incorrect regno";
+                response.put("result", "incorrect regno");
+                return response;
             }
         }
         else
         {
-            return " incorrect name ";
+            response.put("result", "incorrect name");
+            return response;
         }
     }
 
