@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface AmountInfoRepository extends JpaRepository<AmountInfo, Long> {
 
     AmountInfo findAmountInfoByMemberId(Long memberId);
+    Optional<AmountInfo> getAmountInfoByMemberId(Long memeberId);
 }

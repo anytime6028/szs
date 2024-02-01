@@ -46,13 +46,6 @@ public class AuthController {
         return ResponseEntity.ok(auth.refund());
     }
 
-    @PostMapping("test")
-    public void test()
-    {
-        auth.test();
-    }
-
-
 
 
 }

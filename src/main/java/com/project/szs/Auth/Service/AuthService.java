@@ -204,45 +204,50 @@ public class AuthService {
     }
 
 
-    public Map<String, Object> refund()
+    public Map<String, Object> refund() throws Exception
     {
         Map<String, Object> response = new HashMap<>();
         Long memberId = tokenProvider.getMemberIdFromToken();
         Member member = memberRepositoty.getById(memberId);
-        AmountInfo amountInfo = amountInfoRepository.findAmountInfoByMemberId(memberId);
 
-        double retirementDeduction = amountInfo.getRetirementPension() * 0.15; //퇴직연금세액공제금액
-        double determinedTax = 0; //결정세액
-        double specialDeductionAmount = 0;
-        //보험료 공제금액
-        double specialInsurance = amountInfo.getInsurance()*0.12;
-        //교육비 공제금액
-        double specialEducation = amountInfo.getEducation()*0.15;
-        //기부금 공제금액
-        double specialDonate = amountInfo.getDonate()*0.15;
-        //의료비 공제금액
-        double specialMedical = Math.max((amountInfo.getMedical() - (amountInfo.getTotalPayment()*0.03)) *0.15,0);
-
-        specialDeductionAmount = specialInsurance + specialMedical + specialEducation + specialDonate;
-
-        double standardDeductionAmount = 0; //표준세액공제금액
-
-        if(specialDeductionAmount < 130000)
+        if(amountInfoRepository.getAmountInfoByMemberId(memberId).isEmpty())
         {
-            standardDeductionAmount = 130000;
-            specialDeductionAmount = 0;
+            scrap();
         }
+            AmountInfo amountInfo = amountInfoRepository.findAmountInfoByMemberId(memberId);
 
-        if(amountInfo != null)
-        {
-            determinedTax = amountInfo.getTaxAmount() - (amountInfo.getTaxAmount()*0.55)
-                            - specialDeductionAmount - standardDeductionAmount - retirementDeduction;
+            double retirementDeduction = amountInfo.getRetirementPension() * 0.15; //퇴직연금세액공제금액
+            double determinedTax = 0; //결정세액
+            double specialDeductionAmount = 0;
+            //보험료 공제금액
+            double specialInsurance = amountInfo.getInsurance()*0.12;
+            //교육비 공제금액
+            double specialEducation = amountInfo.getEducation()*0.15;
+            //기부금 공제금액
+            double specialDonate = amountInfo.getDonate()*0.15;
+            //의료비 공제금액
+            double specialMedical = Math.max((amountInfo.getMedical() - (amountInfo.getTotalPayment()*0.03)) *0.15,0);
 
-        }
+            specialDeductionAmount = specialInsurance + specialMedical + specialEducation + specialDonate;
 
-        response.put("이름", member.getName());
-        response.put("결정세액", reFormat(Math.max(determinedTax,0)));
-        response.put("퇴직연금세액공제", reFormat(retirementDeduction));
+            double standardDeductionAmount = 0; //표준세액공제금액
+
+            if(specialDeductionAmount < 130000)
+            {
+                standardDeductionAmount = 130000;
+                specialDeductionAmount = 0;
+            }
+
+            if(amountInfo != null)
+            {
+                determinedTax = amountInfo.getTaxAmount() - (amountInfo.getTaxAmount()*0.55)
+                                - specialDeductionAmount - standardDeductionAmount - retirementDeduction;
+
+            }
+
+            response.put("이름", member.getName());
+            response.put("결정세액", reFormat(Math.max(determinedTax,0)));
+            response.put("퇴직연금세액공제", reFormat(retirementDeduction));
 
         return response;
     }
@@ -251,12 +256,6 @@ public class AuthService {
 
 
 
-
-
-    public void test()
-    {
-        System.out.println(tokenProvider.getMemberIdFromToken());
-    }
 
     public int converAmountToInt(Object amount)
     {
