@@ -28,6 +28,7 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.*;
 
 @Service
@@ -240,8 +241,8 @@ public class AuthService {
         }
 
         response.put("이름", member.getName());
-        response.put("결정세액", Math.max(determinedTax,0));
-        response.put("퇴직연금세액공제", retirementDeduction);
+        response.put("결정세액", reFormat(Math.max(determinedTax,0)));
+        response.put("퇴직연금세액공제", reFormat(retirementDeduction));
 
         return response;
     }
@@ -302,7 +303,13 @@ public class AuthService {
         return new String(decryptedBytes, StandardCharsets.UTF_8);
     }
 
+    public String reFormat(double target)
+    {
+        DecimalFormat decimalFormat = new DecimalFormat("#,###.###");
+        String formatted = decimalFormat.format(target);
 
+        return formatted;
+    }
 
 
 }
